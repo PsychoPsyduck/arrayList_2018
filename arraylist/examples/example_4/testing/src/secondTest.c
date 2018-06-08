@@ -53,6 +53,7 @@ void secondTestCase01(void)
     {
         pAux[i] = newEmployee(id[i],unsortedList[i],unsortedList[i],salary[i],sector[i]);
         r = list->add(list,pAux[i]);
+
         utest_assertEqualsIntMsg(r,0,"Error in return value <add> if ok the correct value to return is: (0)");
     }
 
@@ -105,7 +106,6 @@ void secondTestCase03(void)
 
     for(i=0; i < 10000; i++)
     {
-
         r = list->add(list,pAux);
         utest_assertEqualsIntMsg(r,0,"Error in return value <add> if ok the correct value to return is: (0)");
     }

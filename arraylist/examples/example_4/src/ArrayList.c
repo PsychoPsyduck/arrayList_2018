@@ -84,6 +84,7 @@ int al_add(ArrayList* this, void* pElement)
             this->pElements[this->size]=pElement;
             this->size++;
         }
+
         returnAux = 0;
     }
 
@@ -117,6 +118,11 @@ int al_len(ArrayList* this)
 {
     int returnAux = -1;
 
+    if(this != NULL)
+    {
+        returnAux = this->size;
+    }
+
     return returnAux;
 }
 
@@ -130,6 +136,12 @@ int al_len(ArrayList* this)
 void* al_get(ArrayList* this, int index)
 {
     void* returnAux = NULL;
+
+    if(this != NULL && index >= 0 && index < this->size)
+    {
+        //returnAux = *(this->pElements+index);
+        returnAux = this->pElements[index];
+    }
 
     return returnAux;
 }
@@ -146,6 +158,19 @@ void* al_get(ArrayList* this, int index)
 int al_contains(ArrayList* this, void* pElement)
 {
     int returnAux = -1;
+    int i;
+
+    if(this != NULL && pElement != NULL)
+    {
+        for(i=0;i < this->size;i++)
+        {
+            if(this->pElements[i] == pElement)
+            {
+                return returnAux = 1;
+            }
+            returnAux = 0;
+        }
+    }
 
     return returnAux;
 }
@@ -163,6 +188,12 @@ int al_set(ArrayList* this, int index,void* pElement)
 {
     int returnAux = -1;
 
+    if(this != NULL && pElement != NULL && index >= 0 && index < al_len(this))
+    {
+        this->pElements[index] = pElement;
+        returnAux = 0;
+    }
+
     return returnAux;
 }
 
@@ -176,6 +207,18 @@ int al_set(ArrayList* this, int index,void* pElement)
 int al_remove(ArrayList* this,int index)
 {
     int returnAux = -1;
+    int i;
+
+    if(this != NULL && index >= 0 && index < al_len(this))
+    {
+        for(i=index; i<this->size; i++)
+        {
+            this->pElements[index]=this->pElements[index+1];
+        }
+        this->pElements[this->size-1]=NULL;
+        this->size--;
+        returnAux=0;
+    }
 
     return returnAux;
 }
@@ -327,7 +370,7 @@ int resizeUp(ArrayList* this)
     void* pAux;
     if(this != NULL)
     {
-        pAux = realloc(this, sizeof(void*)*(this->reservedSize + AL_INCREMENT));
+        pAux = realloc(this->pElements, sizeof(void*)*(this->reservedSize + AL_INCREMENT));
         if(pAux != NULL)
         {
             this->reservedSize+=AL_INCREMENT;
