@@ -163,7 +163,7 @@ int al_contains(ArrayList* this, void* pElement)
 
     if(this != NULL && pElement != NULL)
     {
-        for(i=0;i < this->size;i++)
+        for(i=0; i < this->size; i++)
         {
             if(this->pElements[i] == pElement)
             {
@@ -261,7 +261,7 @@ ArrayList* al_clone(ArrayList* this)
         if(returnAux != NULL)
         {
             returnAux->reservedSize = this->reservedSize;
-            for(i=0;i<this->size;i++)
+            for(i=0; i<this->size; i++)
             {
                 al_add(returnAux,this->pElements[i]);
             }
@@ -387,11 +387,13 @@ ArrayList* al_subList(ArrayList* this,int from,int to)
 {
     void* returnAux = NULL;
     int i;
-    if(this != NULL &&  from >= 0 && from < to && to <= al_len(this)){
+    if(this != NULL &&  from >= 0 && from < to && to <= al_len(this))
+    {
         returnAux = al_newArrayList();
         if(returnAux != NULL)
         {
-            for(i=from; i<to; i++){
+            for(i=from; i<to; i++)
+            {
                 al_add(returnAux,al_get(this,i));
             }
         }
@@ -439,32 +441,38 @@ int al_sort(ArrayList* this, int (*pFunc)(void* ,void*), int order)
 {
     int returnAux = -1;
     void* pAux;
-    int i, j;
-
-    if(this != NULL && pFunc != NULL && order >= 0 && order <= 1)
+    int i;
+    int swap;
+    if(this!=NULL && pFunc!=NULL && (order ==1 || order ==0))
     {
-        for(i=0; i < this->size-1; i++)
+        do
         {
-            for(j=i+1; j < this->size; j++)
+            swap=1;
+            for(i=0; i<(this->size-1); i++)
             {
-                if(pFunc(this->pElements[i],this->pElements[j]) == 1 && order == 1)
+                if(pFunc(al_get(this,i),al_get(this,i+1))==-1 && !order)
                 {
-                    pAux = this->pElements[i];
-                    this->pElements[i] = this->pElements[j];
-                    this->pElements[j] = pAux;
+                    pAux=al_get(this,i);
+                    al_set(this,i,al_get(this,i+1));
+                    al_set(this,i+1,pAux);
+                    swap=0;
                 }
-                else if(pFunc(this->pElements[i],this->pElements[j]) == -1 && order == 0)
+                if(pFunc(al_get(this,i),al_get(this,i+1))==1 && order)
                 {
-                    pAux = this->pElements[i];
-                    this->pElements[i] = this->pElements[j];
-                    this->pElements[j] = pAux;
+                    pAux=al_get(this,i);
+                    al_set(this,i,al_get(this,i+1));
+                    al_set(this,i+1,pAux);
+                    swap=0;
                 }
             }
+            returnAux=0;
+
         }
-        returnAux = 0;
+        while(swap==0);
     }
     return returnAux;
 }
+
 
 
 /** \brief Increment the number of elements in pList in AL_INCREMENT elements.
@@ -510,7 +518,7 @@ int expand(ArrayList* this,int index)
     int i;
     if(this != NULL && index >= 0 && index < al_len(this))
     {
-        for(i=this->size;i>index;i--)
+        for(i=this->size; i>index; i--)
         {
             al_set(this,i+1,this->pElements[i]);
         }
@@ -532,7 +540,7 @@ int contract(ArrayList* this,int index)
     int i;
     if(this != NULL && index >= 0 && index < al_len(this))
     {
-        for(i=index;i<this->size;i++)
+        for(i=index; i<this->size; i++)
         {
             al_set(this,i,this->pElements[i+1]);
         }
@@ -541,4 +549,32 @@ int contract(ArrayList* this,int index)
     }
 
     return returnAux;
+}
+
+/** \brief Decrement the number of elements in pList in AL_INCREMENT elements.
+ * \param pList ArrayList* Pointer to arrayList
+ * \return int Return (-1) if Error [pList is NULL pointer or if can't allocate memory]
+ *                  - (0) if ok
+ */
+int resizeDown(ArrayList* this)
+{
+    int returnAux = -1;
+    if(this != NULL)
+    {
+        if(this->size == this->reservedSize)
+        {
+            if(pAux != NULL)
+            {
+                this->reservedSize-=AL_INCREMENT;
+                returnAux=0;
+            }
+        }
+        else
+        {
+
+            returnAux=0;
+        }
+    }
+    return returnAux;
+
 }
